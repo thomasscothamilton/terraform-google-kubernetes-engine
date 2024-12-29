@@ -20,4 +20,3 @@ override.tf.json
 
 # Sensitive files
 secret.auto.tfvars
-t

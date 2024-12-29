@@ -1,0 +1,3 @@
+#!/bin/bash
+
+gcloud iam service-accounts create config-connector --display-name "Config Connector Service Account"
