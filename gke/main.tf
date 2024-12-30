@@ -65,4 +65,21 @@ module "kubernetes-config" {
   cluster_name = local.cluster_name
 }
 
+# //+ Config Connector GKE
+# module "wi" {
+#   source              = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
+#   version             = "~> 35.0"
+#   gcp_sa_name         = "cnrmsa"
+#   cluster_name        = local.cluster_name
+#   name                = "cnrm-controller-manager"
+#   location            = "us-east1-b"
+#   use_existing_k8s_sa = true
+#   annotate_k8s_sa     = false
+#   namespace           = "cnrm-system"
+#   project_id          = "thomasscothamilton"
+#   roles               = ["roles/owner"]
+# }
+
+//- Config Connector GKE
+
 
