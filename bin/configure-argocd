@@ -1,0 +1,97 @@
+#!/bin/bash
+
+cat << EOF > thomasscothamilton-application.yaml
+# thomasscothamilton-application.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: thomasscothamilton-appproject
+  namespace: argocd
+spec:
+  description: Project for managing the App of Apps
+  sourceRepos:
+    - https://github.com/thomasscothamilton/thomasscothamilton.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: "*"
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+EOF
+
+echo "thomasscothamilton-appproject.yaml"
+#
+#cat << EOF > thomasscothamilton-application.yaml
+## thomasscothamilton-application.yaml
+#apiVersion: argoproj.io/v1alpha1
+#kind: Application
+#metadata:
+#  name: thomasscothamilton-application
+#  namespace: argocd
+#spec:
+#  project: default
+#  source:
+#    repoURL: https://github.com/thomasscothamilton/thomasscothamilton
+#    targetRevision: main
+#    path: applications
+#  destination:
+#    server: https://kubernetes.default.svc
+#    namespace: argocd
+#  syncPolicy:
+#    automated:
+#      prune: true
+#      selfHeal: true
+#EOF
+#
+#echo "thomasscothamilton-application.yaml"
+
+cat << EOF > thomasscothamilton-clusters.yaml
+# thomasscothamilton-clusters.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: thomasscothamilton-clusters
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/thomasscothamilton/thomasscothamilton
+    targetRevision: main
+    path: clusters
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+EOF
+
+echo "thomasscothamilton-clusters.yaml"
+
+cat << EOF > thomasscothamilton-operators.yaml
+# thomasscothamilton-operators.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: thomasscothamilton-operators
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/thomasscothamilton/thomasscothamilton
+    targetRevision: main
+    path: clusters
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+EOF
+
+echo "thomasscothamilton-operators.yaml"

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo "deleting thomasscothamilton-application resource..."
+kubectl delete applications thomasscothamilton-application -n argocd
+
+echo "deleting thomasscothamilton-project appproject resource..."
+kubectl delete appprojects thomasscothamilton-project -n argocd
+
+echo "destroying gke cluster..."
+gcloud container clusters delete thomasscothamilton --zone us-east1-b
+
+#echo "destroying terraform resources..."
+#cd terraform
+#terraform destroy -auto-approve

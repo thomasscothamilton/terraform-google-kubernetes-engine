@@ -41,9 +41,22 @@ resource "google_service_account" "cnrmsa" {
   create_ignore_already_exists = true
 }
 
-resource "google_project_iam_member" "editor_role" {
+# resource "google_project_iam_member" "editor_role" {
+#   project = "thomasscothamilton"
+#   role    = "roles/editor"
+#   member  = "serviceAccount:${google_service_account.cnrmsa.email}"
+# }
+
+resource "google_project_iam_member" "role_bindings" {
+  for_each = toset([
+    "roles/iam.roleAdmin",
+    "roles/iam.securityAdmin",
+    "roles/iam.serviceAccountAdmin",
+    "roles/cloudsql.client",
+    "roles/iam.serviceAccountTokenCreator"
+  ])
   project = "thomasscothamilton"
-  role    = "roles/editor"
+  role    = each.value
   member  = "serviceAccount:${google_service_account.cnrmsa.email}"
 }
 
@@ -94,7 +107,10 @@ resource "google_container_cluster" "default" {
 
     service_account = google_service_account.cnrmsa.email
     oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/pubsub",
+      "https://www.googleapis.com/auth/sqlservice.admin",
+      "https://www.googleapis.com/auth/devstorage.read_write"
     ]
     workload_metadata_config {
       mode = "GKE_METADATA"
