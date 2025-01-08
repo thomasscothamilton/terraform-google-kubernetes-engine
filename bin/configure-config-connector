@@ -28,4 +28,4 @@ spec:
  googleServiceAccount: "${SERVICE_ACCOUNT_EMAIL}"
 EOF
 
-echo "Wrote configconnector.yaml"
+kubectl apply -f configconnector.yaml

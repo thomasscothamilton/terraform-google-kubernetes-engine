@@ -1,11 +1,19 @@
 #!/bin/bash
 
-cat << EOF > thomasscothamilton-application.yaml
-# thomasscothamilton-application.yaml
+gcloud container clusters get-credentials thomasscothamilton  --region us-east1-b --project thomasscothamilton
+
+kubectl create namespace argocd
+
+helm repo add argo https://argoproj.github.io/argo-helm
+
+helm install argocd argo/argo-cd --namespace argocd
+
+cat << EOF > project.yaml
+# project.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: thomasscothamilton-appproject
+  name: project
   namespace: argocd
 spec:
   description: Project for managing the App of Apps
@@ -22,45 +30,21 @@ spec:
       kind: "*"
 EOF
 
-echo "thomasscothamilton-appproject.yaml"
-#
-#cat << EOF > thomasscothamilton-application.yaml
-## thomasscothamilton-application.yaml
-#apiVersion: argoproj.io/v1alpha1
-#kind: Application
-#metadata:
-#  name: thomasscothamilton-application
-#  namespace: argocd
-#spec:
-#  project: default
-#  source:
-#    repoURL: https://github.com/thomasscothamilton/thomasscothamilton
-#    targetRevision: main
-#    path: applications
-#  destination:
-#    server: https://kubernetes.default.svc
-#    namespace: argocd
-#  syncPolicy:
-#    automated:
-#      prune: true
-#      selfHeal: true
-#EOF
-#
-#echo "thomasscothamilton-application.yaml"
+kubectl apply -f project.yaml
 
-cat << EOF > thomasscothamilton-clusters.yaml
-# thomasscothamilton-clusters.yaml
+cat << EOF > applications.yaml
+# thomasscothamilton-application.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: thomasscothamilton-clusters
+  name: applications
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/thomasscothamilton/thomasscothamilton
     targetRevision: main
-    path: clusters
+    path: applications
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -70,10 +54,10 @@ spec:
       selfHeal: true
 EOF
 
-echo "thomasscothamilton-clusters.yaml"
+kubectl apply -f applications.yaml
 
-cat << EOF > thomasscothamilton-operators.yaml
-# thomasscothamilton-operators.yaml
+cat << EOF > operators.yaml
+# operators.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -84,7 +68,7 @@ spec:
   source:
     repoURL: https://github.com/thomasscothamilton/thomasscothamilton
     targetRevision: main
-    path: clusters
+    path: operators
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -94,4 +78,4 @@ spec:
       selfHeal: true
 EOF
 
-echo "thomasscothamilton-operators.yaml"
+kubectl apply -f operators.yaml
